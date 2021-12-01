@@ -1,0 +1,2 @@
+#ignore class files for java variants
+*.class

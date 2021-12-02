@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-public class Day1J{
+public class Day1{
 
     public static void main(String[] args) throws Exception {
 

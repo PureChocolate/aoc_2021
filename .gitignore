@@ -1,4 +1,6 @@
-#ignore class files for java variants
+#ignore files 
 *.class
 core
 run
+.vscode/
+in2.txt

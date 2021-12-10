@@ -1,5 +1,5 @@
 import time
-with open("bigboy.txt", "r") as f: data = [ a.split(" | ") for a in f.readlines()]
+with open("in2.txt", "r") as f: data = [ a.split(" | ") for a in f.readlines()]
 
 nums = [2,4,3,7]
 corrected = ""
@@ -35,7 +35,7 @@ for a in data:
     check[7] = clock0.union(clock1,clock2)
     check[8] = clock0.union(clock4,clock2,clock3,clock5,clock6,clock1)
     check[9] = clock0.union(clock1,clock2,clock3,clock5,clock6)
-    check = list(map(lambda x: ''.join(str(x)), check))
+    # check = list(map(lambda x: ''.join(str(x)), check))
     # print(time.time() - starti)
     # if maxT < t: maxT = t
     startg = time.time()

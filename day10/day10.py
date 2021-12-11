@@ -1,4 +1,4 @@
-with open("in.txt", "r") as f : data = [a.rstrip() for a in f.readlines()]
+with open("bigboy.txt", "r") as f : data = [a.rstrip() for a in f.readlines()]
 
 char = {"(": (")",1), "[": ("]",2) , "{": ("}",3),"<":(">",4)}
 # lis = [0,0,0,0]
@@ -44,16 +44,11 @@ for a in range(len(data)):
                 break
         lis.append(c)
     if not wrong:
-        lis.reverse()
-        for x in lis:
-            data[a] += char[x][0]
-            scoreC = (scoreC * 5) + char[x][1]
+        # lis.reverse()
+        for x in range(len(lis)-1,-1,-1):
+            # data[a] += char[x][0]
+            scoreC = (scoreC * 5) + char[lis[x]][1]
         scoreCl.append(scoreC)
 print(score)
 scoreCl.sort()
 print(scoreCl[int(len(scoreCl)/2)])
-# print(new)
-        
-
-
-# print(char)

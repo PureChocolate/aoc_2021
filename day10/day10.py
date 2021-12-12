@@ -1,7 +1,6 @@
 with open("bigboy.txt", "r") as f : data = [a.rstrip() for a in f.readlines()]
 
 char = {"(": (")",1), "[": ("]",2) , "{": ("}",3),"<":(">",4)}
-# lis = [0,0,0,0]
 score = 0
 scoreCl = []
 new =[]
@@ -44,9 +43,7 @@ for a in range(len(data)):
                 break
         lis.append(c)
     if not wrong:
-        # lis.reverse()
         for x in range(len(lis)-1,-1,-1):
-            # data[a] += char[x][0]
             scoreC = (scoreC * 5) + char[lis[x]][1]
         scoreCl.append(scoreC)
 print(score)

@@ -3,5 +3,5 @@
 core
 run
 .vscode/
-in2.txt
+in*.txt
 bigboy*.txt

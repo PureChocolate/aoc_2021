@@ -1,5 +1,5 @@
 with open("in.txt", "r") as f : data = f.read().strip()
-#data = "A0016C880162017C3686B18A3D4780"
+data = "9C0141080250320F1802104A08"
 hex2Bin = {"0" : "0000",
 "1" : "0001",
 "2" : "0010",
@@ -29,10 +29,46 @@ def printer(binary):
     print(binary)
 
 def readOperator(binary,readB):
+    vals = []
+    if True:
+        readB += 1
+        if binary[6] == "0":
+            #print("Operator0")
+            nBitP = s2Bin(binary[7:7+15])
+            start = 7+15
+            readB += 15
+            #print(nBitP)
+            while nBitP > 0:
+                u = readPacket(binary[start:],versions)
+                if u[2] == 1:
+                    vals.append(u[0])
+                start += u[1]
+                readB += u[1]
+                nBitP -= u[1]
+                    #print(nBitP)
+        elif binary[6] == "1":
+            #print("Operator1")
+            nPackets = s2Bin(binary[7:7+11])
+            #print(nPackets)
+            start = 7+11
+            readB += 11
+            #if binary[start] == "0" and binary[start+1] == "0":
+            #    start += 2
+            while nPackets > 0:
+                #print("Packets Left: ",nPackets)
+                u = readPacket(binary[start:],versions)
+                if u[2] == 1:
+                    vals.append(u[0])
+                a = max(u[1],11)
+                start += a
+                readB += a
+                nPackets -= 1
+    print(vals)
+    return vals
     #Extract Option
 
 def readPacket(binary,versions):
-    #printer(binary)
+    #printerr(binary)
     #print(len(binary))
     pver = s2Bin(binary[:3])
     versions.append(pver)
@@ -51,49 +87,39 @@ def readPacket(binary,versions):
             #print(s2Bin(num))
             if s[0] == "0":
                 num += s[1:]
-                #print("Literal", s2Bin(num))
+                print("Literal", s2Bin(num))
                 #print("READ: ", readB)
-                return [s2Bin(num),readB]
+                return [s2Bin(num),readB,1]
             num += s[1:]
             start += 5
             i += 1
     elif ptype == 0:
-        value = 0
-        
-    else:
-        readB += 1
-        if binary[6] == "0":
-            #print("Operator0")
-            nBitP = s2Bin(binary[7:7+15])
-            start = 7+15
-            readB += 15
-            #print(nBitP)
-            while nBitP > 0:
-                u = readPacket(binary[start:],versions)
-                #if len(u) > 0:
-                    #print(u)
-                start += u[1]
-                readB += u[1]
-                nBitP -= u[1]
-                    #print(nBitP)
-        elif binary[6] == "1":
-            #print("Operator1")
-            nPackets = s2Bin(binary[7:7+11])
-            #print(nPackets)
-            start = 7+11
-            readB += 11
-            #if binary[start] == "0" and binary[start+1] == "0":
-            #    start += 2
-            while nPackets > 0:
-                #print("Packets Left: ",nPackets)
-                u = readPacket(binary[start:],versions)
-                if len(u) > 0:
-                    a = max(u[1],11)
-                    start += a
-                    readB += a
-                    nPackets -= 1
+        value = readOperator(binary,readB)
+        return [sum(value),readB,1]
+    elif ptype == 1:
+        value = readOperator(binary,readB)
+        tot = 1
+        for a in value:
+            tot = tot * a
+        return(tot)
+    elif ptype == 2:
+        value = readOperator(binary,readB)
+        return [min(value),readB,1]
+    elif ptype == 3:
+        value = readOperator(binary,readB)
+        return [max(value),readB,1]
+    elif ptype == 5:
+        value = readOperator(binary,readB)
+        return 1 if value[0] > value[1] else 0
+    elif ptype == 6:
+        value = readOperator(binary,readB)
+        return 1 if value[0] < value[1] else 0
+    elif ptype == 7:
+        value = readOperator(binary,readB)
+        return 1 if value[0] == value[1] else 0
+
     #print("READ: ", readB)
-    return [0,readB]
+    return [0,readB,0]
             
         
                 
@@ -101,8 +127,8 @@ def readPacket(binary,versions):
 #print("0",end="")
 #printer(binary)
 versions = []
-readPacket(binary,versions)
-print(sum(versions))
+print(readPacket(binary,versions)[0])
+print("Part1: ",sum(versions))
             
 
 #print(pver,ptype,num,val)

@@ -1,5 +1,5 @@
 with open("in.txt", "r") as f : data = f.read().strip()
-data = "9C0141080250320F1802104A08"
+#data = "9C0141080250320F1802104A08"
 hex2Bin = {"0" : "0000",
 "1" : "0001",
 "2" : "0010",
@@ -41,7 +41,9 @@ def readOperator(binary,readB):
             while nBitP > 0:
                 u = readPacket(binary[start:],versions)
                 if u[2] == 1:
+                    #print("in literal while: ", readB, u)
                     vals.append(u[0])
+                    #print("MAIN vals: ", vals, nBitP, u[1])
                 start += u[1]
                 readB += u[1]
                 nBitP -= u[1]
@@ -63,16 +65,18 @@ def readOperator(binary,readB):
                 start += a
                 readB += a
                 nPackets -= 1
-    print(vals)
-    return vals
+    #print(vals)
+    return [vals,readB]
     #Extract Option
 
 def readPacket(binary,versions):
-    #printerr(binary)
+    #printer(binary)
     #print(len(binary))
     pver = s2Bin(binary[:3])
     versions.append(pver)
     ptype = s2Bin(binary[3:6])
+    #print(ptype)
+    ret = [0,0,0]
     #print(pver, ptype)
     #print(versions, pver)
     num = ""
@@ -87,7 +91,7 @@ def readPacket(binary,versions):
             #print(s2Bin(num))
             if s[0] == "0":
                 num += s[1:]
-                print("Literal", s2Bin(num))
+                #print("Literal", s2Bin(num))
                 #print("READ: ", readB)
                 return [s2Bin(num),readB,1]
             num += s[1:]
@@ -95,31 +99,47 @@ def readPacket(binary,versions):
             i += 1
     elif ptype == 0:
         value = readOperator(binary,readB)
-        return [sum(value),readB,1]
+        ret[0] = sum(value[0])
+        ret[1] = value[1]
+        ret[2] = 1
+        #print(ret[0])
     elif ptype == 1:
         value = readOperator(binary,readB)
         tot = 1
-        for a in value:
+        for a in value[0]:
             tot = tot * a
-        return(tot)
+        ret[0] = tot
+        ret[1] = value[1]
+        ret[2] = 1
     elif ptype == 2:
         value = readOperator(binary,readB)
-        return [min(value),readB,1]
+        ret[0] = min(value[0])
+        ret[1] = value[1]
+        ret[2] = 1
     elif ptype == 3:
         value = readOperator(binary,readB)
-        return [max(value),readB,1]
+        ret[0] = max(value[0])
+        ret[1] = value[1]
+        ret[2] = 1
     elif ptype == 5:
         value = readOperator(binary,readB)
-        return 1 if value[0] > value[1] else 0
+        ret[0] = 1 if value[0][0] > value[0][1] else 0
+        ret[1] = value[1]
+        ret[2] = 1
     elif ptype == 6:
         value = readOperator(binary,readB)
-        return 1 if value[0] < value[1] else 0
+        ret[0] = 1 if value[0][0] < value[0][1] else 0
+        ret[1] = value[1]
+        ret[2] = 1
     elif ptype == 7:
         value = readOperator(binary,readB)
-        return 1 if value[0] == value[1] else 0
+        #print("VALUES: ",value)
+        ret[0] = 1 if value[0][0] == value[0][1] else 0
+        ret[1] = value[1]
+        ret[2] = 1
 
     #print("READ: ", readB)
-    return [0,readB,0]
+    return ret
             
         
                 

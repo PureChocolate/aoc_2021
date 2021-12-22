@@ -43,14 +43,29 @@ def parse(data):
         data[a] = makeLists(data[a],1)[0]
         print(data[a])
 
-def runNum(data,start,a):
+def explode(number):
+    number = 1
+
+def splitNum(number):
+    number = 1
+
+def reduce(number,depth):
+    for a in number:
+        if type(a) == list and depth >= 4:
+            number = explode(a)
+        elif type(a) == list: reduce(a,depth+1)
+        elif a >= 10: number = splitNum(a)
+
+def runNum(data):
+    cur = data[0]
     for a in range(1, len(data)):
-        cur = addnum(start,data[a])
-        print(cur)
+        cur = addnum(cur,data[a])
+        reduce(cur,1)
     
 
 
 parse(data)
-runNum(data,data[0],1)
+runNum(data)
+print(type((1,2,3)))
 #print(addnum(start,data[0]))
     
